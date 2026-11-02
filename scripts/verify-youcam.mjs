@@ -1,0 +1,18 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const base=process.env.FITCART_TEST_ORIGIN||'http://127.0.0.1:5173';
+const garment=process.argv[2]||'linen-shirt';
+const category=garment==='chore-jacket'?'outer':'upper_body';
+if(!['linen-shirt','chore-jacket','navy-knit'].includes(garment))throw new Error('Choose a catalog garment.');
+const out=path.resolve('../output/FitCart_real_api');await fs.mkdir(out,{recursive:true});
+const evidence={provider:'YouCam',endpoint:'AI Clothes V4',garment,category,startedAt:new Date().toISOString(),checks:[],status:'started'};
+async function app(route,body){const r=await fetch(base+route,{method:body?'POST':'GET',body,headers:{Origin:base},signal:AbortSignal.timeout(100000)});const d=await r.json();evidence.checks.push({route,status:r.status});if(!r.ok)throw new Error(d.error||'Application request failed.');return d;}
+async function upload(name,type){const bytes=await fs.readFile(path.resolve('public/assets',name));const f=new FormData();f.set('file',new File([bytes],name,{type}));return(await app('/api/upload',f)).file_id;}
+try{
+ const s=await app('/api/status');if(!s.configured)throw new Error('No server-side key configured.');console.log('Server-side key configured. Testing actual image uploads.');
+ const src=await upload('sample-person.jpg','image/jpeg');console.log('Source image uploaded.');
+ const ref=await upload(garment+'.png','image/png');console.log('Garment image uploaded.');
+ const taskResponse=await fetch(base+'/api/try-on',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({src_file_id:src,ref_file_id:ref,garment_category:category}),signal:AbortSignal.timeout(70000)});const task=await taskResponse.json();evidence.checks.push({route:'/api/try-on',status:taskResponse.status});if(!taskResponse.ok)throw new Error(task.error||'Task creation failed.');evidence.taskId=task.task_id;console.log('Real YouCam task created. Waiting for the generated image.');
+ for(let i=0;i<48;i++){await new Promise(r=>setTimeout(r,10000));const result=await app('/api/try-on/'+encodeURIComponent(task.task_id));console.log('Poll '+(i+1)+': '+result.status);if(result.status==='error')throw new Error(result.error||'Vendor task failed.');if(result.status==='success'){if(!result.url)throw new Error('Task returned no image.');const url=new URL(result.url);if(url.protocol!=='https:')throw new Error('Result URL was not HTTPS.');const image=await fetch(result.url,{signal:AbortSignal.timeout(60000)});if(!image.ok)throw new Error('Result download failed.');const bytes=Buffer.from(await image.arrayBuffer());if(bytes.length<1000)throw new Error('Result image was unexpectedly small.');const name=garment+'-youcam-result.'+(image.headers.get('content-type')?.includes('png')?'png':'jpg');await fs.writeFile(path.join(out,name),bytes);evidence.status='success';evidence.completedAt=new Date().toISOString();evidence.resultFile=name;evidence.resultBytes=bytes.length;await fs.writeFile(path.join(out,garment+'-evidence.json'),JSON.stringify(evidence,null,2));console.log(JSON.stringify({success:true,resultFile:path.join(out,name),resultBytes:bytes.length,taskId:evidence.taskId}));process.exitCode=0;break;}}
+ if(evidence.status!=='success')throw new Error('Timed out. Do not recreate the task before checking its vendor status.');
+}catch(e){evidence.status='error';evidence.error=e.message;evidence.completedAt=new Date().toISOString();await fs.writeFile(path.join(out,garment+'-evidence.json'),JSON.stringify(evidence,null,2));console.error(JSON.stringify({success:false,error:e.message}));process.exitCode=1;}

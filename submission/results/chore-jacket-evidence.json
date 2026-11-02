@@ -1,0 +1,34 @@
+{
+  "provider": "YouCam",
+  "endpoint": "AI Clothes V4",
+  "garment": "chore-jacket",
+  "category": "outer",
+  "startedAt": "2026-11-02T11:42:43.307Z",
+  "checks": [
+    {
+      "route": "/api/status",
+      "status": 200
+    },
+    {
+      "route": "/api/upload",
+      "status": 200
+    },
+    {
+      "route": "/api/upload",
+      "status": 200
+    },
+    {
+      "route": "/api/try-on",
+      "status": 200
+    },
+    {
+      "route": "/api/try-on/s78pYNgZNYJ2e1qDc0ue3BC7UQFRnn3zSB98hgd0Su-sbHDYlbUcsC29Cf2C6uNaGi4M447Ki6l9hDTl1ySvww",
+      "status": 200
+    }
+  ],
+  "status": "success",
+  "taskId": "s78pYNgZNYJ2e1qDc0ue3BC7UQFRnn3zSB98hgd0Su-sbHDYlbUcsC29Cf2C6uNaGi4M447Ki6l9hDTl1ySvww",
+  "completedAt": "2026-11-02T11:43:04.371Z",
+  "resultFile": "chore-jacket-youcam-result.jpg",
+  "resultBytes": 127200
+}

@@ -63,3 +63,8 @@ node scripts/check-http.mjs
 ```
 
 The HTTP check expects the dev server and does not call YouCam or consume units. See `ASSETS.md` for media provenance; MIT licensing applies to source code and does not override provider sample-media rights. AI tools assisted implementation and original catalog asset generation; virtual try-on outputs come from YouCam.
+
+## Verified live integration — November 2, 2026
+
+Two end-to-end tests passed through the actual application server: person upload, garment upload, AI Clothes V4 task creation, status polling, and result download. The linen shirt used upper_body and the chore jacket used outer. Actual YouCam images and task evidence are in submission/results/. These are recorded API results, not mocked previews. The tests used the public developer sample person and original generated garment inputs. No personal user photos were uploaded.
+

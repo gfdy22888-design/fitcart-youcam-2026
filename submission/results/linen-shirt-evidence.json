@@ -1,0 +1,34 @@
+{
+  "provider": "YouCam",
+  "endpoint": "AI Clothes V4",
+  "garment": "linen-shirt",
+  "category": "upper_body",
+  "startedAt": "2026-11-02T11:41:29.669Z",
+  "checks": [
+    {
+      "route": "/api/status",
+      "status": 200
+    },
+    {
+      "route": "/api/upload",
+      "status": 200
+    },
+    {
+      "route": "/api/upload",
+      "status": 200
+    },
+    {
+      "route": "/api/try-on",
+      "status": 200
+    },
+    {
+      "route": "/api/try-on/MOaskQ2_mCwHGhbTpbX1Vg1xNEAzX0XEQHJceQpn0Zm-26RPczNmGo66SVCO1RTXGi4M447Ki6l9hDTl1ySvww",
+      "status": 200
+    }
+  ],
+  "status": "success",
+  "taskId": "MOaskQ2_mCwHGhbTpbX1Vg1xNEAzX0XEQHJceQpn0Zm-26RPczNmGo66SVCO1RTXGi4M447Ki6l9hDTl1ySvww",
+  "completedAt": "2026-11-02T11:41:51.666Z",
+  "resultFile": "linen-shirt-youcam-result.jpg",
+  "resultBytes": 128666
+}
