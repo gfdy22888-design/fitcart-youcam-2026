@@ -1,0 +1,15 @@
+Target: 110–150 seconds. Record actual UI and real YouCam results.
+
+0–15s: "Meet FitCart. Online shopping makes it easy to add one more piece. We wanted to make it easier to choose the pieces you'll actually wear."
+
+15–35s: "Start with a photo. Choose a garment or bring a find from somewhere else. We use YouCam AI Clothes Virtual Try-On V4, sending both images through the File API and creating an asynchronous task."
+
+35–60s: Show task submission and actual result. If editing out the wait, label "processing time shortened". "Slide between the original and the preview. This is a visual preview, not a guarantee of physical fit."
+
+60–85s: Show two actual YouCam results. "Compare a few options in the same space and save the ones that feel right."
+
+85–115s: Save the S$69 shirt and S$98 jacket; budget S$150, total S$167, overshoot S$17. Change shirt to 60 planned wears, showing S$1.15 per wear. "Connect style with the practical decision. Your budget and your expected use help you compare value."
+
+115–135s: Export list. "Take your shortlist away without buying anything. FitCart puts room between liking a piece and deciding to buy it. Your style. Before you buy."
+
+Before recording: valid key/units; at least two successful actual try-ons; no key visible; no unlicensed music. Upload public video to YouTube/Vimeo and supply its real URL before final submission. Do not replace vendor failures with simulated successful previews.

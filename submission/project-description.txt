@@ -1,0 +1,34 @@
+FitCart — Your style. Before you buy.
+
+Tagline
+A considered-shopping companion: try on, compare, and build a shortlist that fits your life and budget.
+
+Inspiration
+An online cart answers "can I buy this?" more readily than "will I actually wear it?" We wanted to put a pause between a flattering product photo and an impulse purchase. FitCart brings a personal visual preview and simple decision tools into one workspace.
+
+What it does
+Start with a sample or personal photo, try curated garments or a garment found elsewhere, compare real previews side by side, and save favorites. A running budget shows whether the shortlist is within reach. Editable planned wears make cost per wear visible. Export the final shortlist as a shopping note without initiating a purchase.
+
+How we built it
+React and Vinext with a server-side YouCam integration. Both person and garment images are validated and uploaded through the File API. The server creates an AI Clothes Virtual Try-On V4 task, and the client polls every ten seconds until success or an explicit error. Keys remain server-side or in current-tab memory. The UI combines a reveal slider, comparison workspace, budget meter, and local shortlist.
+
+What makes it different
+The try-on is one step in a considered purchase decision. Bring a garment from elsewhere, compare a few options instead of generating a feed, and inspect budget and expected-use tradeoffs before taking a shortlist away.
+
+Challenges
+Try-on is asynchronous; source and reference images must cover the same body region. Waiting, invalid images, authorization failures, and insufficient units need explicit handling. Illustrative prices and wear estimates must remain distinct from actual generated results and measured evidence.
+
+Accomplishments
+An integrated shopping workflow with responsive layouts, clear errors, budget and wear calculations, and a downloadable decision artifact. See final submission status for verified API integration and any remaining limitations.
+
+What we learned
+A useful fitting room needs patient feedback while a task runs, image-specific recovery, and a clear next decision when the preview arrives.
+
+What's next
+Opt-in history, authorized retailer feeds, account quotas, sizing information, and real user studies. Reduced returns and more considered purchasing are hypotheses, not measured outcomes.
+
+Built with
+YouCam API · AI Clothes Virtual Try-On V4 · React · TypeScript · Vinext · Vite · Cloudflare Workers · CSS · Lucide
+
+Disclosure
+AI tools assisted implementation and original catalog asset generation. YouCam produces virtual try-on outputs. Prices are illustrative. The app does not measure physical fit or purchase items.
