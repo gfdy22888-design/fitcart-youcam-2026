@@ -4,6 +4,14 @@
 
 A considered-shopping companion for the YouCam API Skin AI & eCommerce VTO Hackathon: real garment try-on, side-by-side comparison, a budget-aware shortlist, and editable cost-per-wear estimates.
 
+## Public demo
+
+- Full application: https://fitcart-youcam-2026.shi18395586367.chatgpt.site/
+- GitHub Pages: https://gfdy22888-design.github.io/fitcart-youcam-2026/
+- Source: https://github.com/gfdy22888-design/fitcart-youcam-2026
+
+Both entrances use the same application. GitHub Pages serves the frontend and calls the full application's server API. Choose **View recorded examples** to inspect two previously generated real YouCam results without using API units. Uploading a new photo and choosing **Try it on** creates a new live task.
+
 ## Features
 
 - Start with a sample or upload a JPG/PNG photo.
@@ -27,7 +35,7 @@ npm run dev
 
 Open the Local URL printed by the server, normally http://127.0.0.1:5173. In **Connection settings**, paste your YouCam API key with available units. The key stays in current-tab memory, is sent only to this app's server and YouCam, and is not written to browser storage or source control. Refreshing clears it. Requests consume units in your account.
 
-An owner-private deployment can configure the runtime secret `YOUCAM_API_KEY`. Do not operate a publicly writable service with an unrestricted shared key. Public operation needs authentication and account-specific usage controls, or user-supplied keys.
+The hosted hackathon demo configures `YOUCAM_API_KEY` as a server-side runtime secret; it is never included in GitHub Pages or browser bundles. Shared live generation has best-effort per-IP, per-worker rate limiting (three attempts per ten minutes). This is not a durable or account-wide spending cap. Visitors may connect their own key; that key never falls back to the demo account. Live generation also depends on the account's remaining units.
 
 ## End-to-end test
 
@@ -50,7 +58,15 @@ React / Vinext → server endpoints → YouCam File API → signed image upload 
 - `GET /api/try-on/:id`: returns normalized task status and actionable image errors.
 - `GET /api/status`: reports whether a server key is configured, without revealing it.
 
-The app does not write photos or API keys to a database. YouCam's data processing and retention terms apply. Catalog shortlist IDs and budget are stored locally. Custom images and result URLs are session-only; vendor URLs may expire. Production accounts, billing, persistent image storage, and public shared-key quotas are outside this prototype.
+The app does not write photos or API keys to a database. YouCam's data processing and retention terms apply. Catalog shortlist IDs and budget are stored locally. Custom images and result URLs are session-only; vendor URLs may expire. Production accounts, billing, persistent image storage, and durable account-wide quotas are outside this prototype.
+
+## GitHub Pages build
+
+```sh
+node node_modules/vite/bin/vite.js build --config vite.pages.config.ts
+```
+
+The generated `docs/` directory is served from the repository's main branch. Keep `docs/.nojekyll` when rebuilding. The Pages frontend uses the trusted GitHub Pages origin for CORS requests; the backend and its secret run on Sites.
 
 Official API docs: https://docs.perfectcorp.com/reference/ai_clothes/section/overview
 

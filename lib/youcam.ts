@@ -1,9 +1,10 @@
 import {env} from "cloudflare:workers";
+import {allowedOrigin} from "./public-api";
 const BASE="https://yce-api-01.makeupar.com/s2s/v2.0";
 type Env={YOUCAM_API_KEY?:string};
 export function apiKey(request:Request){return request.headers.get("X-YouCam-Key")?.trim()||(env as Env).YOUCAM_API_KEY||process.env.YOUCAM_API_KEY||"";}
 export function json(value:unknown,status=200){return Response.json(value,{status,headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});}
-export function sameOrigin(request:Request){const origin=request.headers.get("origin");if(origin&&origin!==new URL(request.url).origin)throw new Error("Cross-origin requests are not allowed.");}
+export function sameOrigin(request:Request){if(!allowedOrigin(request))throw new Error("Cross-origin requests are not allowed.");}
 export function requireKey(request:Request){sameOrigin(request);const key=apiKey(request);if(!key)throw new Error("Connect a YouCam API key in Connection settings before generating a try-on.");return key;}
 export async function youcam(path:string,key:string,body?:unknown){const r=await fetch(BASE+path,{method:body?"POST":"GET",headers:{Authorization:"Bearer "+key,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(45000)});let d:any;try{d=await r.json();}catch{throw new Error("YouCam returned an unreadable response. Please try again.");}if(!r.ok||d.status>=400){if(r.status===401||r.status===403)throw new Error("Your YouCam API key was not accepted. Check the key and its permissions.");if(r.status===402||/balance|credit|unit|quota/i.test(String(d.error_code)+String(d.error)))throw new Error("Your YouCam account has insufficient units. Redeem your hackathon credits in the YouCam console.");if(r.status===429)throw new Error("YouCam is receiving too many requests. Please wait before trying again.");throw new Error("YouCam request failed: "+String(d.error_code||d.error||r.status).slice(0,200));}return d.data??d;}
 export function errorResponse(e:unknown,status=400){const message=e instanceof Error?e.message:"Request failed.";return json({error:message},status);}

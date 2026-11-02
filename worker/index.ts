@@ -1,9 +1,12 @@
 import handler from "vinext/server/fetch-handler";
+import {publicApiGuard, withPublicCors} from "../lib/public-api";
 import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
 
 const worker = {
-  fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
+  async fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
+    const isApi = new URL(request.url).pathname.startsWith("/api/");
+    if(isApi){const early = publicApiGuard(request);if(early)return withPublicCors(request,early);}
     let binding = ctx.props?.CONNECTORS;
     // Local preview emulates the same request-scoped capability. This branch and
     // the auxiliary service binding are absent from production builds.
@@ -23,7 +26,8 @@ const worker = {
         },
       };
     }
-    return runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
+    const response = await runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
+    return isApi ? withPublicCors(request,response) : response;
   },
 };
 
